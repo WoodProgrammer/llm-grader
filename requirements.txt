@@ -1,0 +1,6 @@
+sentence-transformers
+scikit-learn
+numpy
+pandas
+chromadb
+fastapi
