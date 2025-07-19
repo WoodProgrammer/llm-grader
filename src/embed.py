@@ -30,7 +30,7 @@ class Embedder(object):
         for item in llm_outputs:
             query = item["llm_output"]
             result = self.collection.query(query_texts=[query], n_results=1)
-            score = result["distances"][0][0]  # Chroma returns cosine distance, lower = better
+            score = result["distances"][0][0]
             similarity = 1 - score
             hallucination_score = round(score, 3)
 
