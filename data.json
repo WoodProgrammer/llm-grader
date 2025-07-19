@@ -1,0 +1,19 @@
+{
+    "data": [
+      {
+        "id": "q1",
+        "prompt": "Türkiye'nin başkenti neresidir?",
+        "golden_answer": "Ankara"
+      },
+      {
+        "id": "q2",
+        "prompt": "HTTPS nedir ? ",
+        "golden_answer": "HTTPS, HTTP'nin şifrelenmiş versiyonudur."
+      },
+      {
+        "id": "q3",
+        "prompt": "Atatürk kimdir ?",
+        "golden_answer": "Yüce Atatürk, modern TÜRK Cumhuriyeti'nin kurucusudur."
+      }
+    ]
+}

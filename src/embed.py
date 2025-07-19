@@ -13,24 +13,23 @@ class Embedder(object):
         for item in golden_data:
             try:
                 self.collection.add(
-                    documents=[item["golden_answer"]],
-                    metadatas=[{"prompt": item["prompt"]}],
-                    ids=[item["id"]]
+                    documents=[item.golden_answer],
+                    metadatas=[{"prompt": item.prompt}],
+                    ids=[item.id]
                 )
-                logging.info("Embedding in progress ...", item["id"])
+                logging.info("Embedding in progress ...", item.id)
             
             except Exception as exp:
                 logging.error("Error while embedding golden answers", exp)
                 break
         
-        logging.info("Embedding process has been completed properly", item["id"])
+        logging.info("Embedding process has been completed properly", item.id)
     
     def _grade_llm_outputs(self,llm_outputs):
         results = []
         for item in llm_outputs:
             query = item["llm_output"]
             result = self.collection.query(query_texts=[query], n_results=1)
-
             score = result["distances"][0][0]  # Chroma returns cosine distance, lower = better
             similarity = 1 - score
             hallucination_score = round(score, 3)
