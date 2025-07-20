@@ -22,8 +22,8 @@ async def update_item(item: LLMResponse):
 @app.post("/api/v1/embed_structured_golden_answers")
 async def embed_structured_golden_answers(item: GoldenDataList):
     try:
-        embed_results = embedding_service._embed_data(golden_data=item.data)
-        return embed_results
+        embedding_service._embed_data(golden_data=item.data)
+        return "OK"
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -33,7 +33,7 @@ async def embed_structured_golden_answers(item: GoldenDataList):
 @app.get("/api/v1/grade_answers")
 async def grade_answers():
     try:    
-        grade_results = embedding_service._grade_llm_outputs(llm_outputs=llm_outputs)
+        grade_results = embedding_service._grade_llm_outputs(llm_outputs=_llm_output_list)
         return grade_results
     except Exception as e:
         raise HTTPException(
