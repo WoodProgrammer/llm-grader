@@ -4,3 +4,4 @@ numpy
 pandas
 chromadb
 fastapi
+prometheus_client

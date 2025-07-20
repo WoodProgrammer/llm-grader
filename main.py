@@ -1,7 +1,9 @@
 from src.embed import Embedder
 from src.base_models import LLMResponse, GoldenDataList
-from fastapi import FastAPI, HTTPException, status
+from src.metrics import LLM_GRADE_SCORE
+from fastapi import FastAPI, Response, HTTPException, status
 from fastapi.responses import JSONResponse
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 
 app = FastAPI()
 embedding_service = Embedder()
@@ -30,16 +32,23 @@ async def embed_structured_golden_answers(item: GoldenDataList):
             detail=f"Embedding failed: {str(e)}"
         )
 
-@app.get("/api/v1/grade_answers")
-async def grade_answers():
-    try:    
+@app.get("/api/v1/metrics")
+async def metrics():
+    try:
         grade_results = embedding_service._grade_llm_outputs(llm_outputs=_llm_output_list)
-        return grade_results
+        for result in grade_results:
+            LLM_GRADE_SCORE.labels(
+                qid=result["id"],
+                similarity=result["similarity"], 
+                grade=result["grade"]).set(result["hallucination_score"])
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail=f"Grading failed: {str(e)}"
         )
+    
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 if __name__ == "__main__":
     app.run()
