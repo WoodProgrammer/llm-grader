@@ -13,9 +13,7 @@ embedding_service = Embedder()
 @app.post("/api/v1/answers")
 async def update_item(item: LLMResponse):
     try:
-        print("The llm response is ", item)
-        embedding_service.redis_cli.rpush(LLM_SCORE_LIST, json.dumps({"id":item.id, "llm_output": item.llm_output}))
-        
+        embedding_service.redis_cli.rpush(LLM_SCORE_LIST, json.dumps({"id":item.id, "llm_output": item.llm_output}))        
         return JSONResponse(
             content={"message": "LLM output successfully updated."},
             status_code=status.HTTP_200_OK
