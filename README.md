@@ -34,7 +34,7 @@ and run
 uvicorn app.main:app --reload
 ```
 
-## API Usage
+## API Usage
 
 This project contains three important endpoint at the end
 
