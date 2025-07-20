@@ -37,6 +37,8 @@ spec:
           {{- end }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["python3", "-m"]
+          command: ["uvicorn", "main:app", "--reload"]
           env:
           - name: REDIS_HOST
             valueFrom:
