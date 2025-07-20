@@ -1,4 +1,6 @@
+import json
 from src.embed import Embedder
+from src.consts import LLM_SCORE_LIST
 from src.base_models import LLMResponse, GoldenDataList
 from src.metrics import LLM_GRADE_SCORE
 from fastapi import FastAPI, Response, HTTPException, status
@@ -8,18 +10,21 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 app = FastAPI()
 embedding_service = Embedder()
 
-_llm_output_list = []
-
 @app.post("/api/v1/answers")
 async def update_item(item: LLMResponse):
-    _llm_output_list.append({
-        "id": item.id,
-        "llm_output": item.llm_output
-    })
-    return JSONResponse(
-        content={"message": "LLM output successfully updated."},
-        status_code=status.HTTP_200_OK
-    )
+    try:
+        print("The llm response is ", item)
+        embedding_service.redis_cli.rpush(LLM_SCORE_LIST, json.dumps({"id":item.id, "llm_output": item.llm_output}))
+        
+        return JSONResponse(
+            content={"message": "LLM output successfully updated."},
+            status_code=status.HTTP_200_OK
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error while saving data to Redis: {str(e)}"
+        )
 
 @app.post("/api/v1/embed_structured_golden_answers")
 async def embed_structured_golden_answers(item: GoldenDataList):
@@ -35,7 +40,8 @@ async def embed_structured_golden_answers(item: GoldenDataList):
 @app.get("/api/v1/metrics")
 async def metrics():
     try:
-        grade_results = embedding_service._grade_llm_outputs(llm_outputs=_llm_output_list)
+        _llm_output_list = embedding_service.redis_cli.lrange(LLM_SCORE_LIST, 0, -1)
+        grade_results = embedding_service._grade_llm_outputs(llm_outputs=[json.loads(item) for item in _llm_output_list])
         for result in grade_results:
             LLM_GRADE_SCORE.labels(
                 qid=result["id"],

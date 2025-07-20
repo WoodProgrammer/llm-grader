@@ -1,13 +1,19 @@
 import chromadb
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
+import os
+import redis
 import logging
+
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 
 class Embedder(object):
     def __init__(self,embed_model="all-MiniLM-L6-v2"):
         client = chromadb.Client()
+        redis_cli = redis.Redis(host=REDIS_HOST, port=6379, decode_responses=True)
         embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=embed_model)
         self.collection = client.get_or_create_collection(name="golden_set", embedding_function=embedding_fn)
+        self.redis_cli = redis_cli
 
     def _embed_data(self, golden_data=any):
         for item in golden_data:
