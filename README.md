@@ -82,7 +82,8 @@ This endpoint basically save all the responses by the ID. Id is the important pa
 A /metrics endpoint is exposed for Prometheus scraping. Sample metrics:
 
 ```sh
-llm_grade_score
+llm_grade_score{}
+llm_grade_count{}
 ```
 
 You can use Grafana to visualize pass/fail counts, score distributions, and monitor LLM quality trends over time.
