@@ -37,6 +37,23 @@ spec:
           {{- end }}
           image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: REDIS_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: llm-grader-configmap
+                key: redis_host
+          - name: LLM_PASS_SCORE_THRESHOLD
+            valueFrom:
+              configMapKeyRef:
+                name: llm-grader-configmap
+                key: llm_pass_score_threshold
+          - name: LLM_FAIL_SCORE_THRESHOLD
+            valueFrom:
+              configMapKeyRef:
+                name: llm-grader-configmap
+                key: llm_fail_score_threshold
+
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

@@ -15,3 +15,8 @@ livenessProbe:
     port: 8000
   initialDelaySeconds: 15
   periodSeconds: 10
+
+env:
+  redis_host: redis.redis:6379
+  llm_success_score_threshold: "0.80"
+  llm_fail_score_threshold: "0.70"
