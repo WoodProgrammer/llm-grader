@@ -5,7 +5,7 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from src.embed import Embedder
 from src.consts import LLM_SCORE_LIST
 from src.base_models import LLMResponse, GoldenDataList
-from src.metrics import LLM_GRADE_SCORE
+from src.metrics import LLM_GRADE_SCORE, LLM_TOTAL_REQUEST_COUNT
 
 app = FastAPI()
 embedding_service = Embedder()
@@ -17,7 +17,7 @@ async def update_item(item: LLMResponse):
             LLM_SCORE_LIST,
             json.dumps({"id":item.id, "llm_output": item.llm_output})
         )
-
+        LLM_TOTAL_REQUEST_COUNT.inc(1)
         return JSONResponse(
             content={"message": "LLM output successfully updated."},
             status_code=status.HTTP_200_OK
