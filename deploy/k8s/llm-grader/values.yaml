@@ -1,0 +1,17 @@
+image:
+  registry: emirozbir/llm-grader
+  tag: v0.0.1
+  pullPolicy: Always
+service:
+  port: 8000
+
+readinessProbe:
+  tcpSocket:
+    port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 10
+livenessProbe:
+  tcpSocket:
+    port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 10
