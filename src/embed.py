@@ -1,6 +1,7 @@
 import chromadb
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
+from consts import PASS_SCORE, FAIL_SCORE
 import os
 import redis
 import logging
@@ -46,7 +47,7 @@ class Embedder(object):
                 "most_similar_golden": result["documents"][0][0],
                 "similarity": round(similarity, 3),
                 "hallucination_score": hallucination_score,
-                "grade": "PASS" if similarity > 0.85 else "WARNING" if similarity > 0.7 else "FAIL"
+                "grade": "PASS" if similarity > PASS_SCORE else "WARNING" if similarity > FAIL_SCORE else "FAIL"
             })
         
         return results
