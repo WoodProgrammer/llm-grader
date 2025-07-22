@@ -6,3 +6,4 @@ data:
   redis_host: {{.Values.env.redis_host}}
   llm_success_score_threshold: {{.Values.env.llm_success_score_threshold}}
   llm_fail_score_threshold: {{.Values.env.llm_fail_score_threshold}}
+  n_results: {{.Values.env.n_results}}

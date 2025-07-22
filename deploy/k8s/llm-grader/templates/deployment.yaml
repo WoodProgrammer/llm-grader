@@ -55,7 +55,11 @@ spec:
               configMapKeyRef:
                 name: llm-grader-configmap
                 key: llm_fail_score_threshold
-
+          - name: N_RESULTS
+            valueFrom:
+              configMapKeyRef:
+                name: llm-grader-configmap
+                key: n_results
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

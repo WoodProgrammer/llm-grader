@@ -32,11 +32,11 @@ class Embedder(object):
         
         logging.info("Embedding process has been completed properly", item.id)
     
-    def _grade_llm_outputs(self,llm_outputs):
+    def _grade_llm_outputs(self,n_results, llm_outputs):
         results = []
         for item in llm_outputs:
             query = item["llm_output"]
-            result = self.collection.query(query_texts=[query], n_results=1)
+            result = self.collection.query(query_texts=[query], n_results=n_results)
             score = result["distances"][0][0]
             similarity = 1 - score
             hallucination_score = round(score, 3)

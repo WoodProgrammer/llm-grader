@@ -3,7 +3,7 @@ from fastapi import FastAPI, Response, HTTPException, status
 from fastapi.responses import JSONResponse
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from src.embed import Embedder
-from src.consts import LLM_SCORE_LIST
+from src.consts import LLM_SCORE_LIST, N_RESULTS
 from src.base_models import LLMResponse, GoldenDataList
 from src.metrics import LLM_GRADE_SCORE, LLM_TOTAL_REQUEST_COUNT
 
@@ -44,7 +44,7 @@ async def metrics():
     try:
         _llm_output_list = embedding_service.redis_cli.lrange(LLM_SCORE_LIST, 0, -1)
         grade_results = embedding_service._grade_llm_outputs(
-            llm_outputs=[json.loads(item) for item in _llm_output_list])
+            N_RESULTS,llm_outputs=[json.loads(item) for item in _llm_output_list])
         for result in grade_results:
             LLM_GRADE_SCORE.labels(
                 qid=result["id"],

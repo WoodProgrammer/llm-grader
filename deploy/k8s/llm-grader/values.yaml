@@ -20,3 +20,4 @@ env:
   redis_host: redis.redis:6379
   llm_success_score_threshold: "0.80"
   llm_fail_score_threshold: "0.70"
+  n_results: "1"
