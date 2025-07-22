@@ -1,7 +1,6 @@
 import chromadb
 from chromadb.utils import embedding_functions
-from sentence_transformers import SentenceTransformer
-from consts import PASS_SCORE, FAIL_SCORE
+from src.consts import PASS_SCORE, FAIL_SCORE
 import os
 import redis
 import logging
@@ -40,6 +39,9 @@ class Embedder(object):
             score = result["distances"][0][0]
             similarity = 1 - score
             hallucination_score = round(score, 3)
+            print("The similariy score is ", similarity)
+            print("tHE pass Score is ", PASS_SCORE)
+            print("tHE faİL Score is ", FAIL_SCORE)
 
             results.append({
                 "id": item["id"],

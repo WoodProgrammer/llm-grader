@@ -43,6 +43,7 @@ async def embed_structured_golden_answers(item: GoldenDataList):
 async def metrics():
     try:
         _llm_output_list = embedding_service.redis_cli.lrange(LLM_SCORE_LIST, 0, -1)
+        print("The llm output list is ", _llm_output_list)
         grade_results = embedding_service._grade_llm_outputs(
             N_RESULTS,llm_outputs=[json.loads(item) for item in _llm_output_list])
         for result in grade_results:
