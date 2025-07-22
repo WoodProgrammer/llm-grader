@@ -5,6 +5,10 @@ class LLMResponse(BaseModel):
     id: str
     llm_output: str
 
+class LLMResponseList(BaseModel):
+    data: List[LLMResponse]
+
+
 class GoldenData(BaseModel):
     id: str
     prompt: str

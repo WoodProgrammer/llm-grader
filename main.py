@@ -4,29 +4,30 @@ from fastapi.responses import JSONResponse
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from src.embed import Embedder
 from src.consts import LLM_SCORE_LIST, N_RESULTS
-from src.base_models import LLMResponse, GoldenDataList
+from src.base_models import LLMResponse, GoldenDataList, LLMResponseList
 from src.metrics import LLM_GRADE_SCORE, LLM_TOTAL_REQUEST_COUNT
 
 app = FastAPI()
 embedding_service = Embedder()
 
 @app.post("/api/v1/answers")
-async def update_item(item: LLMResponse):
-    try:
-        embedding_service.redis_cli.rpush(
-            LLM_SCORE_LIST,
-            json.dumps({"id":item.id, "llm_output": item.llm_output})
-        )
-        LLM_TOTAL_REQUEST_COUNT.inc(1)
-        return JSONResponse(
-            content={"message": "LLM output successfully updated."},
-            status_code=status.HTTP_200_OK
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error while saving data to Redis: {str(e)}"
-        )
+async def update_item(item: LLMResponseList):
+    for answer in item.data:
+        try:
+            embedding_service.redis_cli.rpush(
+                LLM_SCORE_LIST,
+                json.dumps({"id":answer.id, "llm_output": answer.llm_output})
+            )
+            LLM_TOTAL_REQUEST_COUNT.inc(1)
+            return JSONResponse(
+                content={"message": "LLM output successfully updated."},
+                status_code=status.HTTP_200_OK
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error while saving data to Redis: {str(e)}"
+            )
 
 @app.post("/api/v1/embed_structured_golden_answers")
 async def embed_structured_golden_answers(item: GoldenDataList):
